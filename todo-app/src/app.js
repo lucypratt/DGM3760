@@ -1,3 +1,11 @@
+const taskTemplate = {
+  todoID: null,
+      todoCategory: "",
+      todoName: "",
+      todoCompleteStatus: false,
+      todoDate: ""
+}
+
 let todos = [
     {
       todoID: 0,
@@ -24,6 +32,11 @@ let todos = [
       },
    
   ];
+
+  function addTask(todoID, todoCategory, todoName, todoCompleteStatus, todoDate) {
+    const newTask = { ...taskTemplate, todoID, todoCategory, todoName, todoCompleteStatus, todoDate };
+    tasks.push(newTask);
+  }
 
   let list = document.getElementById("todoList")
   let addTodo = document.getElementById("addTodo")
