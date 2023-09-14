@@ -1,97 +1,61 @@
-const taskTemplate = {
-  todoID: null,
-      todoCategory: "",
-      todoName: "",
-      todoCompleteStatus: false,
-      todoDate: ""
-}
 
-let todos = [
-    {
-      todoID: 0,
-      todoCategory: "School",
-      todoName: "Finish Homework",
-      todoCompleteStatus: false,
-      todoDate: "1/1/23"
-    },
 
-    {
-        todoID: 2,
-        todoCategory: "Home",
-        todoName: "Do Dishes",
-        todoCompleteStatus: false,
-        todoDate: "3/1/23"
-      },
 
-      {
-        todoID: 3,
-        todoCategory: "Work",
-        todoName: "Send Report",
-        todoCompleteStatus: false,
-        todoDate: "2/1/23"
-      },
-   
-  ];
 
-  function addTask(todoID, todoCategory, todoName, todoCompleteStatus, todoDate) {
-    const newTask = { ...taskTemplate, todoID, todoCategory, todoName, todoCompleteStatus, todoDate };
-    tasks.push(newTask);
-  }
-
+  let addBtn = document.getElementById("addTaskBtn")
   let list = document.getElementById("todoList")
-  let addTodo = document.getElementById("addTodo")
-  
 
-  addTodo.addEventListener("click", function() {
-    generateTodo(todos)
-  });
-  
-  let i = 0;
-  let setID = 0
-  let completeID = "ID-" + setID
-  function generateTodo(newTodo) {  
-
-    let todoWrapper = document.createElement("a")
-    let todo = document.createElement("li")
-    
-
-    if (i < newTodo.length) {
-          todo.innerHTML = newTodo[i]["todoName"]
-          todo.className = "todo"
-          todoWrapper.appendChild(todo)
-          list.appendChild(todoWrapper)
-          i++
-          setID++
-
-    } else {
-       
-        
-            todo.innerHTML = "New Task"
-            todo.className = "todo"
-            todoWrapper.appendChild(todo)
-            list.appendChild(todoWrapper)
-            i++
-            
-
-    }
-
-    todo.addEventListener('click', () => {
-      todo.remove();
-    });
-
-   /*  for (i = 0; i < newTodo.length; i++) {
-        let todo = document.createElement("li")
-        todo.innerHTML = newTodo[i]["todoName"]
-        list.appendChild(todo)
-    }
- */
-    
-  }
-
-  completeID.addEventListener("click", completeID.remove())
-  
  
+  function newTask() {
+    const task = document.createElement("li")
+   
+    const taskWrapper = document.createElement("span")
+    task.setAttribute('id', 'task')
+    const newInput = document.getElementById("myInput").value
+   task.innerHTML = newInput
+   
+   
+    list.appendChild(taskWrapper)
+    taskWrapper.appendChild(task)
+
+    taskWrapper.addEventListener("click", strike = () => {
+      task.classList.toggle("strike")
+    })
+    document.getElementById("myInput").value = "";
+
+
+
+    const wrapper = document.createElement("SPAN");
+    wrapper.innerHTML = "\u00D7";
+    wrapper.className = "close";
   
+    task.appendChild(wrapper);
+  wrapper.addEventListener("click", close = () => {
+    task.style.display = "none"
+
+
+  })
+
+   
+  }
+ const clearButton = document.getElementById("clearDone")
+ clearButton.addEventListener("click", clearDone)
+ function clearDone() {
+  if (document.getElementById('task')) {
+    const element = document.getElementsByClassName("strike")
+    for (i = 0; i < element.length; i++)
+    element[i].hidden = true;
+  }
+ 
+ }
 
   
 
+//  const strikedTasks = 
+//   const completeTaskArr = new Array()
+//   completeTaskArr.push(document.getElementById("task"))
+//    for (i = 0, i < completeTaskArray, i++) {
+//     if (completeTaskArry[i].classList.contains("strike"))
+//    completeTask.remove()
+
+//    }

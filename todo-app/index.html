@@ -5,13 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TODO App</title>
 </head>
-<link/>
+<link rel="stylesheet" href="/todo-app/src/style.css"/>
 <body>
-    <h1>To Do List</h1>
-    <button id="addTodo">Add a ToDo</button>
-    <ul id="todoList">
-        
-    </ul>
+    <div class="wrapper">
+        <header>Todo List</header>
+        <div class="inputField">
+          <input type="text" id="myInput" placeholder="Enter new task" />
+          <button class="addTaskBtn" onclick="newTask()">Add</button>
+        </div>
+        <ul id="todoList">
+         
+        </ul>
+        <div class="footer">
+          <span>You have 1 pending tasks.</span>
+          <button id="clearDone">Clear Done</button>
+        </div>
+      </div>
+  
 
 
 
