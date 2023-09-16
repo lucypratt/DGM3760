@@ -1,0 +1,10 @@
+{
+  "devDependencies": {
+    "tailwindcss": "^3.3.3"
+  },
+  "scripts": {
+    "build-css": "tailwindcss -i ./todo-app/src/input.css -o ./dist/output.css"
+  
+
+  }
+}
