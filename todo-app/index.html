@@ -8,16 +8,18 @@
 <link rel="stylesheet" href="/todo-app/src/style.css"/>
 <body>
     <div class="wrapper">
-        <header>Todo List</header>
+        <header id="header">Todo List</header>
+        
         <div class="inputField">
           <input type="text" id="myInput" placeholder="Enter new task" />
           <button class="addTaskBtn" onclick="newTask()">Add</button>
         </div>
         <ul id="todoList">
-         
+       
         </ul>
         <div class="footer">
-          <span>You have 1 pending tasks.</span>
+          <button id="check" onclick="checkPending()">Check Pending Tasks</button>
+          <span>You have <p id="counter"></p> pending tasks.</span>
           <button id="clearDone">Clear Done</button>
         </div>
       </div>
