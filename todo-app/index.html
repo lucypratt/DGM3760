@@ -3,24 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@3.7.4/dist/full.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.tailwindcss.com"></script>
     <title>TODO App</title>
 </head>
 <link rel="stylesheet" href="/todo-app/src/style.css"/>
 <body>
-    <div class="wrapper">
-        <header id="header">Todo List</header>
+    <div class="wrapper m-7">
+        <header id="header" class="text-3xl font-bold py-4">Todo List</header>
         
         <div class="inputField">
-          <input type="text" id="myInput" placeholder="Enter new task" />
-          <button class="addTaskBtn" onclick="newTask()">Add</button>
+          <input type="text" id="myInput" placeholder="Enter new task" class="input input-bordered w-full max-w-xs"/>
+          
+          <button class="addTaskBtn btn btn-primary px-4" onclick="newTask(), count()">Add</button>
         </div>
-        <ul id="todoList">
+        <div class="flex mx-3">
+         <p class="mr-3">You have   <p class="mr-3" id="counter">  </p>    tasks left</p> 
+        </div>
+        <ul class="bg-[#191E24] w-1/2 rounded-box p-5 mt-3" id="todoList">
        
         </ul>
-        <div class="footer">
-          <button id="check" onclick="checkPending()">Check Pending Tasks</button>
-          <span>You have <p id="counter"></p> pending tasks.</span>
-          <button id="clearDone">Clear Done</button>
+        <div class="flex">
+          <button class="btn btn-secondary mt-3 mx-3" id="clearDone" onclick="count()">Clear Done</button>
+          
+          
         </div>
       </div>
   
