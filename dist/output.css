@@ -534,6 +534,84 @@ video {
   --tw-backdrop-sepia:  ;
 }
 
+.m-5 {
+  margin: 1.25rem;
+}
+
+.m-7 {
+  margin: 1.75rem;
+}
+
+.mx-3 {
+  margin-left: 0.75rem;
+  margin-right: 0.75rem;
+}
+
+.mr-3 {
+  margin-right: 0.75rem;
+}
+
+.mt-3 {
+  margin-top: 0.75rem;
+}
+
+.flex {
+  display: flex;
+}
+
+.hidden {
+  display: none;
+}
+
+.w-1\/2 {
+  width: 50%;
+}
+
+.w-full {
+  width: 100%;
+}
+
+.max-w-xs {
+  max-width: 20rem;
+}
+
+.justify-items-end {
+  justify-items: end;
+}
+
+.bg-\[\#191E24\] {
+  --tw-bg-opacity: 1;
+  background-color: rgb(25 30 36 / var(--tw-bg-opacity));
+}
+
+.p-5 {
+  padding: 1.25rem;
+}
+
+.px-4 {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+.py-4 {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+
+.text-3xl {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+}
+
+.text-xl {
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+}
+
+.font-bold {
+  font-weight: 700;
+}
+
 .strike {
   text-decoration: line-through;
 }
