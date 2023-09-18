@@ -4,7 +4,8 @@
   },
   "scripts": {
     "build-css": "tailwindcss -i ./todo-app/src/input.css -o ./dist/output.css"
-  
-
+  },
+  "dependencies": {
+    "tailwind": "^4.0.0"
   }
 }
