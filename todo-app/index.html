@@ -18,6 +18,10 @@
           <input type="text" id="myInput" placeholder="Enter new task" class="input input-bordered w-full max-w-xs"/>
           
           <button class="addTaskBtn btn btn-primary px-4" onclick="newTask(), count()">Add</button>
+          <select id="category" name="category" class="input input-bordered" placeholder="Category"></select>
+
+
+
         </div>
         <div class="flex mx-3">
          <p class="mr-3">You have   <p class="mr-3" id="counter">  </p>    tasks left</p> 
@@ -27,8 +31,14 @@
         </ul>
         <div class="flex">
           <button class="btn btn-secondary mt-3 mx-3" id="clearDone" onclick="count()">Clear Done</button>
+        
           
-          
+        </div>
+
+        <div class="flex mt-3 mx-3">
+          <input type="text"  id="myNewCategory" placeholder="Enter new Category" class="input input-bordered w-full max-w-xs"/>
+          <button class="btn btn-primary " id="addCategory">Add Category</button>
+
         </div>
       </div>
   
