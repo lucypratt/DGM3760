@@ -1,6 +1,7 @@
 let addBtn = document.getElementById("addTaskBtn")
 let list = document.getElementById("todoList")
 let header = document.getElementById("header")
+const categorySelect = document.getElementById("taskCategory")
 
 function count() {
   const counterText = document.getElementById("counter")
@@ -17,6 +18,8 @@ function newTask() {
   const editBtn = document.createElement("span")
   const taskDiv = document.createElement("div")
 
+
+
   task.setAttribute("id", "task")
 
   const newInput = document.getElementById("myInput").value
@@ -32,11 +35,31 @@ function newTask() {
   wrapper.innerHTML = "\u00D7"
   wrapper.className = "close m-5 justify-items-end font-bold text-xl"
 
-  list.appendChild(taskWrapper)
-  taskWrapper.appendChild(taskDiv)
-  taskDiv.appendChild(task)
-  taskWrapper.appendChild(editBtn)
-  task.appendChild(wrapper)
+  taskDiv.classList.add("flex")
+
+ 
+const selectedCategory = document.getElementById("category").value
+
+const taskCategorySelect = document.createElement("select")
+taskCategorySelect.name = "category"
+
+
+categories.forEach((category) => {
+  const option = document.createElement("option")
+  option.value = category
+  option.text = category
+  taskCategorySelect.appendChild(option)
+})
+
+taskCategorySelect.value = selectedCategory
+taskCategorySelect.classList.add("input", "input-bordered", "mr-2")
+
+list.appendChild(taskWrapper)
+taskWrapper.appendChild(taskDiv)
+taskDiv.appendChild(task)
+taskWrapper.appendChild(taskCategorySelect)
+taskWrapper.appendChild(editBtn)
+task.appendChild(wrapper)
 
   taskDiv.addEventListener("click", () => {
     task.classList.toggle("line-through")
@@ -46,10 +69,11 @@ function newTask() {
   wrapper.addEventListener(
     "click",
     (close = () => {
-      task.style.display = "none"
+      taskWrapper.remove()
     })
   )
 }
+
 const clearButton = document.getElementById("clearDone")
 clearButton.addEventListener("click", clearDone)
 function clearDone() {
@@ -96,6 +120,18 @@ function addCategory() {
   selectElement.add(option)
  
 }
+
+function sort() {
+  const sort = getElementById("sort")
+  categories.forEach((category) => {
+    const option = document.createElement("option")
+    option.value = category
+    option.text = category
+    selectElement.add(option)
+  })
+}
+
+
 
 //  const strikedTasks =
 //   const completeTaskArr = new Array()
