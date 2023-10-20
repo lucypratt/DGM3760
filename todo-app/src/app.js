@@ -1,172 +1,234 @@
-let addBtn = document.getElementById("addTaskBtn")
-let list = document.getElementById("todoList")
-let header = document.getElementById("header")
-const categorySelect = document.getElementById("taskCategory")
+let categories = []
+let todos = []
 
-function count() {
-  const counterText = document.getElementById("counter")
+function addCategory() {
+  let categoryText = document.getElementById("myNewCategory").value
 
-  const listItems = Array.from(document.getElementById("todoList").children)
+  let newCategory = { name: categoryText }
+  categories.push(newCategory)
+  createCategoryList()
 
-  const count = listItems.length
-  counterText.textContent = count
+  document.getElementById("myNewCategory").value = ""
 }
 
-function newTask() {
-  const task = document.createElement("li")
-  const taskWrapper = document.createElement("span")
-  const editBtn = document.createElement("span")
-  const taskDiv = document.createElement("div")
-
-
-
-  task.setAttribute("id", "task")
-
-  const newInput = document.getElementById("myInput").value
-  task.innerHTML = newInput
-
-  editBtn.innerHTML = "Edit"
-  editBtn.classList.add("btn", "btn-primary", "px-1")
-  editBtn.addEventListener("click", edit(task))
-
-  taskWrapper.classList.add("flex", "space-between", "w-100")
-
-  const wrapper = document.createElement("SPAN")
-  wrapper.innerHTML = "\u00D7"
-  wrapper.className = "close m-5 justify-items-end font-bold text-xl"
-
-  taskDiv.classList.add("flex")
-
- 
-const selectedCategory = document.getElementById("category").value
-
-const taskCategorySelect = document.createElement("select")
-taskCategorySelect.name = "category"
-
-
-categories.forEach((category) => {
-  const option = document.createElement("option")
-  option.value = category
-  option.text = category
-  taskCategorySelect.appendChild(option)
-})
-
-taskCategorySelect.value = selectedCategory
-taskCategorySelect.classList.add("input", "input-bordered", "mr-2")
-
-list.appendChild(taskWrapper)
-taskWrapper.appendChild(taskDiv)
-taskDiv.appendChild(task)
-taskWrapper.appendChild(taskCategorySelect)
-taskWrapper.appendChild(editBtn)
-task.appendChild(wrapper)
-
-  taskDiv.addEventListener("click", () => {
-    task.classList.toggle("line-through")
-  })
-  document.getElementById("myInput").value = ""
-
-  wrapper.addEventListener(
-    "click",
-    (close = () => {
-      taskWrapper.remove()
+function editCategory(name) {
+  let newText = prompt("Edit category:", getCategoryById(name).name)
+  if (newText !== null) {
+    categories = categories.map(function (category) {
+      if (category.name === name) {
+        category.name = newText
+      }
+      return category
     })
-  )
-}
 
-const clearButton = document.getElementById("clearDone")
-clearButton.addEventListener("click", clearDone)
-function clearDone() {
-  const tasks = document.getElementsByClassName("line-through")
+    todos = todos.map(function (todo) {
+      if (todo.category === name) {
+        todo.category = newText
+      }
+      return todo
+    })
 
-  while (tasks.length > 0) {
-    const task = tasks[0]
-
-    const taskWrapper = task.parentElement
-    const taskParent = taskWrapper.parentElement
-    taskParent.remove()
+    createCategoryList()
+    createTodoCategoryDropdown()
+    createSortCategoryDropdown()
+    renderTodoList()
   }
 }
 
-function edit(task) {
-  task.setAttribute("contenteditable", "true")
-  task.focus()
+function deleteCategory(name) {
+    categories = categories.filter(function (category) {
+      return category.name !== name
+    })
+
+    todos = todos.map(function (todo) {
+      if (todo.category === name) {
+        todo.category = ""
+      }
+      return todo
+    })
+
+    createCategoryList()
+    createTodoCategoryDropdown()
+    createSortCategoryDropdown()
+    renderTodoList()
+  
 }
 
-const categories = ["Work", "Personal", "School"]
-const selectElement = document.getElementById("category")
-const addCategoryBtn = document.getElementById("addCategory")
-addCategoryBtn.addEventListener("click", addCategory)
-
-
-categories.forEach((category) => {
-  const option = document.createElement("option")
-  option.value = category
-  option.text = category
-  selectElement.add(option)
-})
-
-
-
-function addCategory() {
-  const categoryName = document.getElementById("myNewCategory").value
-  console.log(categoryName)
-
-  categories.push(categoryName)
-
-  const option = document.createElement("option")
-  option.value = categoryName
-  option.text = categoryName
-  selectElement.add(option)
- 
+function getCategoryById(name) {
+  return categories.find(category => category.name === name)
 }
 
-function sort() {
-  const sort = getElementById("sort")
+function createCategoryList() {
+  let categoryList = document.getElementById("categoryList")
+  categoryList.innerHTML = ""
+
   categories.forEach((category) => {
-    const option = document.createElement("option")
-    option.value = category
-    option.text = category
-    selectElement.add(option)
+    let li = document.createElement("li")
+    li.innerText = category.name
+    
+    function handleClick() {
+      editCategory(category.name)
+  }
+   li.onclick = handleClick
+
+    const deleteBtn = document.createElement("button")
+    deleteBtn.classList.add('btn', 'ml-5', 'btn-secondary')
+    deleteBtn.innerText = "Delete"
+
+
+    function deleteBtnDelete(event) {
+      event.stopPropagation()
+      deleteCategory(category.name)
+    }
+
+    deleteBtn.onclick = deleteBtnDelete
+
+    li.appendChild(deleteBtn)
+
+    categoryList.appendChild(li)
+  })
+
+  createTodoCategoryDropdown()
+  createSortCategoryDropdown()
+}
+
+function createTodoCategoryDropdown() {
+  let categoryDropdown = document.getElementById("category")
+  categoryDropdown.innerHTML = '<option value="">Category</option>'
+
+  categories.forEach((category) => {
+    let option = document.createElement("option")
+    option.value = category.name
+    option.innerText = category.name
+    categoryDropdown.appendChild(option)
   })
 }
 
+function createSortCategoryDropdown() {
+  let sortCategoryDropdown = document.getElementById("sortCategory")
+  sortCategoryDropdown.innerHTML = '<option value="all">All</option>'
 
+  categories.forEach(function (category) {
+    let option = document.createElement("option")
+    option.value = category.name
+    option.innerText = category.name
+    sortCategoryDropdown.appendChild(option)
+  })
+}
 
-//  const strikedTasks =
-//   const completeTaskArr = new Array()
-//   completeTaskArr.push(document.getElementById("task"))
-//    for (i = 0, i < completeTaskArray, i++) {
-//     if (completeTaskArry[i].classList.contains("strike"))
-//    completeTask.remove()
+function addTodo() {
+  let todoText = document.getElementById("newTodo").value
+  let selectedCategory = document.getElementById("category").value
+  if (todoText.trim() === "" || selectedCategory === "") return
 
-//    }
+  let newTodo = {
+    id: Date.now(),
+    task: todoText,
+    complete: false,
+    category: selectedCategory,
+  }
+  todos.push(newTodo)
+  renderTodoList()
 
-// function removeLi(task) {
-//   if (window.getComputedStyle(task).display === "none")
-//   task.remove()
+  document.getElementById("newTodo").value = ""
+}
 
-// }
-// function checkCounter() {
-//   removeLi(document.getElementById('task'))
+function toggleDone(id) {
+  todos = todos.map(function (todo) {
+    if (todo.id === id) {
+      todo.complete = !todo.complete
+    }
+    return todo
+  })
+  renderTodoList()
+}
 
-//   const listItems= Array.from(document.getElementById('todoList').children)
+function editTodo(id) {
+  let newText = prompt("Edit todo:", getTodoById(id).task)
+  if (newText !== null) {
+    todos = todos.map(function (todo) {
+      if (todo.id === id) {
+        todo.task = newText
+      }
+      return todo
+    })
+    renderTodoList()
+  }
+}
 
-//   for (i=0; i > listItems.length; i++) {
-//     if (window.getComputedStyle(listItems[i]).display === "none") {
-//       listItems[i].pop()
-//     } else {
+function deleteTodo(id) {
+  todos = todos.filter(function (todo) {
+    return todo.id !== id
+  })
+  renderTodoList()
+}
 
-//     }
-//   }
-//   console.log(listItems.length)
+function deleteCompleted() {
+  todos = todos.filter(function (todo) {
+    return !todo.complete
+  })
+  renderTodoList()
+}
 
-// }
+function getTodoById(id) {
+  return todos.find(function (todo) {
+    return todo.id === id
+  })
+}
 
-// const check = document.getElementById("check")
+function renderTodoList() {
+  let todoList = document.getElementById("todoList")
+  todoList.innerHTML = ""
 
-//   function checkPending() {
-//     const number = document.getElementById("todoList").childElementCount
-//
-//     counterText.textContent =  number
-//   }
+  todos.forEach(function (todo) {
+    let li = document.createElement("li")
+    li.innerText = todo.task + " (Category: " + todo.category + ")"
+    li.onclick = function () {
+      toggleDone(todo.id)
+    }
+    let editBtn = document.createElement("span")
+    editBtn.classList.add("edit-btn")
+    editBtn.innerHTML = "&#9998;"
+    editBtn.onclick = function (event) {
+      event.stopPropagation()
+      editTodo(todo.id)
+    }
+    li.appendChild(editBtn)
+
+    if (todo.complete) {
+      li.classList.add("done")
+    }
+
+    todoList.appendChild(li)
+  })
+
+  updateTodosLeft()
+}
+
+function updateTodosLeft() {
+  let totalTodos = todos.length
+  let completedTodos = todos.filter(function (todo) {
+    return todo.complete
+  }).length
+  let todosLeft = totalTodos - completedTodos
+  document.getElementById("todosLeft").innerText = "Todos left: " + todosLeft
+}
+
+function sortTodosByCategory() {
+  let selectedCategory = document.getElementById("sortCategory").value
+
+  if (selectedCategory === "all") {
+    renderTodoList()
+  } else {
+    let filteredTodos = todos.filter(function (todo) {
+      return todo.category === selectedCategory
+    })
+    let sortedTodos = filteredTodos.concat(
+      todos.filter(function (todo) {
+        return todo.category !== selectedCategory
+      })
+    )
+    todos = sortedTodos
+    renderTodoList()
+  }
+}

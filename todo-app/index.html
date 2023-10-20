@@ -9,48 +9,34 @@
     <link href="/todo-app/src/input.css" rel="stylesheet">
 </head>
 
+<style>
+  ul { list-style-type: none; padding: 0; }
+  li { margin: 5px 0; cursor: pointer; position: relative; }
+  .done { text-decoration: line-through; }
+  .edit-btn { position: absolute; right: 5px; cursor: pointer; }
+</style>
+</head>
+<body class="m-5">
+<h1 class="font-bold text-3xl">Todo App</h1>
 
-<body>
-    <div class="wrapper m-7">
-        <header id="header" class="text-3xl font-bold py-4">Todo List</header>
-        
-        <div class="inputField">
-          <input type="text" id="myInput" placeholder="Enter new task" class="input input-bordered w-full max-w-xs"/>
-          
-          <button class="addTaskBtn btn btn-primary px-4" onclick="newTask(), count()">Add</button>
-          <select id="category" name="category" class="input input-bordered" placeholder="Category"></select>
+<div id="categoriesSection">
+  <h2 class="font-bold text-xl mt-5">Categories</h2>
+  <input class="input input-bordered w-full max-w-xs" type="text" id="myNewCategory" placeholder="Enter a new category">
+  <button class="btn btn-primary " onclick="addCategory()">Add Category</button>
+  <ul class="bg-[#191E24] w-1/2 rounded-box p-5 mt-3" id="categoryList"></ul>
+</div>
 
-
-
-        </div>
-        <div>
-          Sort By Category
-          
-          <select id="sort" name="sort" class="input input-bordered" placeholder="Sort">Sort</select>
-
-        </div>
-        <div class="flex mx-3">
-         <p class="mr-3">You have   <p class="mr-3" id="counter">  </p>    tasks left</p> 
-        </div>
-        <ul class="bg-[#191E24] w-1/2 rounded-box p-5 mt-3" id="todoList">
-       
-        </ul>
-        <div class="flex">
-          <button class="btn btn-secondary mt-3 mx-3" id="clearDone" onclick="count()">Clear Done</button>
-        
-          
-        </div>
-
-        <div class="flex mt-3 mx-3">
-          <input type="text"  id="myNewCategory" placeholder="Enter new Category" class="input input-bordered w-full max-w-xs"/>
-          <button class="btn btn-primary " id="addCategory">Add Category</button>
-
-        </div>
-      </div>
-  
-
-
-
+<div id="todosSection">
+  <h2 class="font-bold text-xl mt-5">Todos</h2>
+  <input class="input input-bordered w-full max-w-xs" type="text" id="newTodo" placeholder="Enter a new todo">
+  <select class="select select-bordered w-full max-w-xs" id="category"></select>
+  <button class="btn btn-primary px-4" onclick="addTodo()">Add Todo</button>
+  <label for="sortCategory">Sort by Category: </label>
+  <select class="select select-bordered w-full max-w-xs" id="sortCategory" onchange="sortTodosByCategory()"></select>
+  <ul class="bg-[#191E24] w-1/2 rounded-box p-5 mt-3" id="todoList"></ul>
+  <p id="todosLeft"></p>
+  <button class="btn btn-secondary mt-3 mx-3" onclick="deleteCompleted()">Clear Completed</button>
+</div>
     <script src="src/app.js"></script>
 </body>
 </html>
