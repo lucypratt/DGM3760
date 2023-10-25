@@ -134,7 +134,7 @@ function addTodo() {
 }
 
 function toggleDone(id) {
-  todos = todos.map(function (todo) {
+  todos = todos.map( (todo) => {
     if (todo.id === id) {
       todo.complete = !todo.complete
     }
@@ -146,7 +146,7 @@ function toggleDone(id) {
 function editTodo(id) {
   let newText = prompt("Edit todo:", getTodoById(id).task)
   if (newText !== null) {
-    todos = todos.map(function (todo) {
+    todos = todos.map( (todo) => {
       if (todo.id === id) {
         todo.task = newText
       }
@@ -155,23 +155,40 @@ function editTodo(id) {
     renderTodoList()
   }
 }
+//Old CSS Deletion
+//  const strikedTasks =
+//   const completeTaskArr = new Array()
+//   completeTaskArr.push(document.getElementById("task"))
+//    for (i = 0, i < completeTaskArray, i++) {
+//     if (completeTaskArry[i].classList.contains("strike"))
+//    completeTask.remove()
+
+//    }
+
+// function removeLi(task) {
+//   if (window.getComputedStyle(task).display === "none")
+//   task.remove()
+
+// }
+// function checkCounter() {
+//   removeLi(document.getElementById('task'))
 
 function deleteTodo(id) {
-  todos = todos.filter(function (todo) {
+  todos = todos.filter((todo) => {
     return todo.id !== id
   })
   renderTodoList()
 }
 
 function deleteCompleted() {
-  todos = todos.filter(function (todo) {
+  todos = todos.filter((todo) => {
     return !todo.complete
   })
   renderTodoList()
 }
 
 function getTodoById(id) {
-  return todos.find(function (todo) {
+  return todos.find((todo) => {
     return todo.id === id
   })
 }
@@ -180,7 +197,7 @@ function renderTodoList() {
   let todoList = document.getElementById("todoList")
   todoList.innerHTML = ""
 
-  todos.forEach(function (todo) {
+  todos.forEach( (todo) => {
     let li = document.createElement("li")
     li.innerText = todo.task + " (Category: " + todo.category + ")"
     li.onclick = function () {
@@ -188,7 +205,7 @@ function renderTodoList() {
     }
     let editBtn = document.createElement("span")
     editBtn.classList.add("edit-btn")
-    editBtn.innerHTML = "&#9998;"
+    editBtn.innerHTML = "&#9999;"
     editBtn.onclick = function (event) {
       event.stopPropagation()
       editTodo(todo.id)
@@ -207,7 +224,7 @@ function renderTodoList() {
 
 function updateTodosLeft() {
   let totalTodos = todos.length
-  let completedTodos = todos.filter(function (todo) {
+  let completedTodos = todos.filter((todo) => {
     return todo.complete
   }).length
   let todosLeft = totalTodos - completedTodos
@@ -220,11 +237,11 @@ function sortTodosByCategory() {
   if (selectedCategory === "all") {
     renderTodoList()
   } else {
-    let filteredTodos = todos.filter(function (todo) {
+    let filteredTodos = todos.filter((todo) => {
       return todo.category === selectedCategory
     })
     let sortedTodos = filteredTodos.concat(
-      todos.filter(function (todo) {
+      todos.filter((todo) => {
         return todo.category !== selectedCategory
       })
     )
