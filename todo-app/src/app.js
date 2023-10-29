@@ -116,13 +116,15 @@ function createSortCategoryDropdown() {
   })
 }
 
+
+let newTodoID = 1
 function addTodo() {
   let todoText = document.getElementById("newTodo").value
   let selectedCategory = document.getElementById("category").value
   if (todoText.trim() === "" || selectedCategory === "") return
 
   let newTodo = {
-    id: Date.now(),
+    id: newTodoID,
     task: todoText,
     complete: false,
     category: selectedCategory,
@@ -131,6 +133,7 @@ function addTodo() {
   renderTodoList()
 
   document.getElementById("newTodo").value = ""
+  newTodoID ++
 }
 
 function toggleDone(id) {
