@@ -14,14 +14,14 @@ function addCategory() {
 function editCategory(name) {
   let newText = prompt("Edit category:", getCategoryById(name).name)
   if (newText !== null) {
-    categories = categories.map(function (category) {
+    categories = categories.map((category) => {
       if (category.name === name) {
         category.name = newText
       }
       return category
     })
 
-    todos = todos.map(function (todo) {
+    todos = todos.map((todo) => {
       if (todo.category === name) {
         todo.category = newText
       }
@@ -36,16 +36,25 @@ function editCategory(name) {
 }
 
 function deleteCategory(name) {
-    categories = categories.filter(function (category) {
-      return category.name !== name
-    })
-
-    todos = todos.map(function (todo) {
-      if (todo.category === name) {
-        todo.category = ""
+  let updatedCategories = []
+  for (let i = 0; i < categories.length; i++) {
+      let currentCategory = categories[i]
+      if (currentCategory.name !== name) {
+          updatedCategories.push(currentCategory)
       }
-      return todo
-    })
+  }
+  categories = updatedCategories
+  
+
+  let updatedTodos = []
+  for (let i = 0; i < todos.length; i++) {
+      let currentTodo = todos[i]
+      if (currentTodo.category === name) {
+          currentTodo.category = ""
+      }
+      updatedTodos.push(currentTodo)
+  }
+  todos = updatedTodos
 
     createCategoryList()
     createTodoCategoryDropdown()
@@ -55,7 +64,13 @@ function deleteCategory(name) {
 }
 
 function getCategoryById(name) {
-  return categories.find(category => category.name === name)
+  for (let i = 0; i < categories.length; i++) {
+      let currentCategory = categories[i]
+      if (currentCategory.name === name) {
+          return currentCategory
+      }
+  }
+  
 }
 
 function createCategoryList() {
@@ -69,7 +84,9 @@ function createCategoryList() {
     function handleClick() {
       editCategory(category.name)
   }
-   li.onclick = handleClick
+  li.onclick = () => {
+    handleClick()
+}
 
     const deleteBtn = document.createElement("button")
     deleteBtn.classList.add('btn', 'ml-5', 'btn-secondary')
@@ -77,7 +94,7 @@ function createCategoryList() {
 
 
     function deleteBtnDelete(event) {
-      event.stopPropagation()
+      
       deleteCategory(category.name)
     }
 
@@ -108,7 +125,7 @@ function createSortCategoryDropdown() {
   let sortCategoryDropdown = document.getElementById("sortCategory")
   sortCategoryDropdown.innerHTML = '<option value="all">All</option>'
 
-  categories.forEach(function (category) {
+  categories.forEach((category) => {
     let option = document.createElement("option")
     option.value = category.name
     option.innerText = category.name
@@ -116,12 +133,44 @@ function createSortCategoryDropdown() {
   })
 }
 
+// function newTask() {
+//   const task = document.createElement("li")
+  
+ 
+//   const taskWrapper = document.createElement("span")
+  
+//   task.setAttribute('id', 'task')
+//   task.setAttribute("contenteditable", "true")
+//   const newInput = document.getElementById("myInput").value
+//  task.innerHTML = newInput
+ 
+//   list.appendChild(taskWrapper)
+//   taskWrapper.appendChild(task)
+
+//   taskWrapper.addEventListener("click", strike = () => {
+//     task.classList.toggle("strike")
+
+//   })
+//   document.getElementById("myInput").value = "";
+
+//   const wrapper = document.createElement("SPAN");
+//   wrapper.innerHTML = "\u00D7";
+//   wrapper.className = "close m-5 justify-items-end font-bold text-xl";
+  
+
+//   task.appendChild(wrapper);
+// wrapper.addEventListener("click", close = () => {
+//   task.style.display = "none"
+  
+// })
+
+
+// }
 
 let newTodoID = 1
 function addTodo() {
   let todoText = document.getElementById("newTodo").value
   let selectedCategory = document.getElementById("category").value
-  if (todoText.trim() === "" || selectedCategory === "") return
 
   let newTodo = {
     id: newTodoID,
@@ -145,6 +194,12 @@ function toggleDone(id) {
   })
   renderTodoList()
 }
+
+
+// function edit() {
+//   task.setAttribute("contenteditable", "true")
+// }
+
 
 function editTodo(id) {
   let newText = prompt("Edit todo:", getTodoById(id).task)
@@ -203,13 +258,13 @@ function renderTodoList() {
   todos.forEach( (todo) => {
     let li = document.createElement("li")
     li.innerText = todo.task + " (Category: " + todo.category + ")"
-    li.onclick = function () {
+    li.onclick = () => {
       toggleDone(todo.id)
     }
     let editBtn = document.createElement("span")
     editBtn.classList.add("edit-btn")
     editBtn.innerHTML = "&#9999;"
-    editBtn.onclick = function (event) {
+    editBtn.onclick = (event) => {
       event.stopPropagation()
       editTodo(todo.id)
     }
@@ -231,11 +286,12 @@ function updateTodosLeft() {
     return todo.complete
   }).length
   let todosLeft = totalTodos - completedTodos
-  document.getElementById("todosLeft").innerText = "Todos left: " + todosLeft
+  document.getElementById("todosLeft").innerText = "You have " + todosLeft + " todos left"
 }
 
 function sortTodosByCategory() {
   let selectedCategory = document.getElementById("sortCategory").value
+  let sortedTodos = []
 
   if (selectedCategory === "all") {
     renderTodoList()
@@ -243,11 +299,14 @@ function sortTodosByCategory() {
     let filteredTodos = todos.filter((todo) => {
       return todo.category === selectedCategory
     })
-    let sortedTodos = filteredTodos.concat(
-      todos.filter((todo) => {
-        return todo.category !== selectedCategory
-      })
-    )
+    for (let i = 0; i < filteredTodos.length; i++) {
+      sortedTodos.push(filteredTodos[i])
+  }
+  for (let i = 0; i < todos.length; i++) {
+    if (todos[i].category !== selectedCategory) {
+        sortedTodos.push(todos[i])
+    }
+}
     todos = sortedTodos
     renderTodoList()
   }
