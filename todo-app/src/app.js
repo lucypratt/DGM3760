@@ -1,6 +1,11 @@
 let categories = []
 let todos = []
 
+
+fetch('/api/todos')
+.then(res => res.json())
+.then(data => console.log(data))
+
 function addCategory() {
   let categoryText = document.getElementById("myNewCategory").value
 
@@ -183,6 +188,18 @@ function addTodo() {
 
   document.getElementById("newTodo").value = ""
   newTodoID ++
+
+
+  fetch('/api/todo', {
+    method: 'POST',
+    body: JSON.stringify({todo: todoText}),
+    headers: {"Content-Type": "application/json"}
+  })
+  .then(res => res.json())
+  .then(data => {
+    console.log(data)
+    renderTodoList(data)
+  })
 }
 
 function toggleDone(id) {
@@ -193,6 +210,20 @@ function toggleDone(id) {
     return todo
   })
   renderTodoList()
+
+  let todoID = event.target.dataset.todoid
+
+  //make a fetch request to complete dodo
+  fetch('/api/complete', {
+    method: 'POST',
+    body: JSON.stringify({todoID}),
+    headers: {"Content-Type": "application/json"}
+  })
+  .then(res => res.json())
+  .then(data => {
+    console.log(data)
+    renderTodoList(data)
+  })
 }
 
 

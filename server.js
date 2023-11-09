@@ -2,6 +2,7 @@ const express = require('express')
 const app = express()
 const port = 3000
 
+app.use(express.static('todo-app'))
 
 const bodyParser = require('body-parser')
 app.use(bodyParser.json())
@@ -42,7 +43,7 @@ app.get('/', (req, res) => {
     res.send(todos)
 })
 
-app.post('/api/todo', (req, res) => {
+app.post('/api/todos', (req, res) => {
     res.send("Got a POST request")
     const newTodo = {
         id: todo.length,
@@ -50,10 +51,10 @@ app.post('/api/todo', (req, res) => {
         done: false
     }
     todos.push(newTodo)
-    res.send(newTodo)
+    res.send(todos)
 })
 
-app.put('/api/todo', (req, res) => {
+app.put('/api/todos', (req, res) => {
     const todoId = parseInt(req.params.id)
     const updatedTodo = req.body
     todos = todos.map(todo => {
@@ -65,29 +66,45 @@ app.put('/api/todo', (req, res) => {
     res.send(todos)
 })
 
-app.delete('api/todos/', (req, res) => {
+app.delete('api/todos', (req, res) => {
     const todoID = parseInt(req.params.id)
     todos = todos.filter(todo => todo.id !== todoID)
     res.send(todos)
 })
 
-app.get('/api/categories/:categoryName/todos', (req, res) => {
+//complete todo
+app.post('api/complete', (req, res) => {
+const todoID = req.body.todoID
+
+
+const todoIndex = todos.findIndex(todo => todo.todoID == todoID)
+console.log("index", todoIndex)
+
+todos(todoIndex).todoComplete = !todos(todoIndex).todoComplete
+
+res.send(todos)
+})
+
+//Todos for each category
+app.get('/api/todos/categories', (req, res) => {
     const categoryName = req.params.category.name
-    const todosForCategory = todos.filter(todo => todo => todo.category === categoryName)
+    const todosForCategory = todos.filter(todo => todo.category === categoryName)
     res.send(todosForCategory)
 })
 
+//get categories
 app.get('/api/categories', (req, res) => {
     res.send(categories)
 })
 
+//add a category
 app.post('/api/categories', (req, res) => {
     const newCategory = req.body.category.name
     categories.push(newCategory)
     res.send(categories)
 })
-
-app.put('/api/categories/:categoryName', (req, res) => {
+//update categories
+app.put('/api/todos/categories', (req, res) => {
     const categoryName = req.params.category.name
     const updatedCategory = req.body.category.name
     categories = categories.map(category => {
@@ -98,7 +115,7 @@ app.put('/api/categories/:categoryName', (req, res) => {
     })
     res.send(categories)
 })
-
+//delete category
 app.delete('/api/categories/:categoryName', (req, res) => {
     const categoryName = req.params.category.name
     categories = categories.filter(category => category !== categoryName)
