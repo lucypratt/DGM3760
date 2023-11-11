@@ -1,4 +1,5 @@
 const express = require('express')
+const hostname = "127.0.0.1"
 const app = express()
 const port = 3000
 
@@ -6,7 +7,7 @@ app.use(express.static('todo-app'))
 
 const bodyParser = require('body-parser')
 app.use(bodyParser.json())
-app.use(bodyParse.urlencoded())
+app.use(bodyParser.urlencoded())
 app.use(bodyParser.urlencoded ( {extended: true}))
 
 let todos = [
@@ -39,21 +40,23 @@ let categories = [
     }
 ]
 
-app.get('/', (req, res) => {
+// get todos
+app.get('/api/todos', (req, res) => {
     res.send(todos)
 })
 
 app.post('/api/todos', (req, res) => {
     res.send("Got a POST request")
-    const newTodo = {
-        id: todo.length,
+    /* const newTodo = {
+        id: todos.length,
         todo: "New Todo " + (todos.length + 1),
         done: false
     }
-    todos.push(newTodo)
+    todos.push(newTodo) */
     res.send(todos)
 })
 
+//update todos
 app.put('/api/todos', (req, res) => {
     const todoId = parseInt(req.params.id)
     const updatedTodo = req.body
@@ -66,7 +69,7 @@ app.put('/api/todos', (req, res) => {
     res.send(todos)
 })
 
-app.delete('api/todos', (req, res) => {
+app.delete('api/todos/:id', (req, res) => {
     const todoID = parseInt(req.params.id)
     todos = todos.filter(todo => todo.id !== todoID)
     res.send(todos)
@@ -80,14 +83,14 @@ const todoID = req.body.todoID
 const todoIndex = todos.findIndex(todo => todo.todoID == todoID)
 console.log("index", todoIndex)
 
-todos(todoIndex).todoComplete = !todos(todoIndex).todoComplete
+todos(todoIndex).done = !todos(todoIndex).done
 
 res.send(todos)
 })
 
 //Todos for each category
 app.get('/api/todos/categories', (req, res) => {
-    const categoryName = req.params.category.name
+    const categoryName = req.body.category.name
     const todosForCategory = todos.filter(todo => todo.category === categoryName)
     res.send(todosForCategory)
 })
@@ -104,7 +107,7 @@ app.post('/api/categories', (req, res) => {
     res.send(categories)
 })
 //update categories
-app.put('/api/todos/categories', (req, res) => {
+app.put('/api/todos/categories/:categoryName', (req, res) => {
     const categoryName = req.params.category.name
     const updatedCategory = req.body.category.name
     categories = categories.map(category => {
@@ -123,6 +126,6 @@ app.delete('/api/categories/:categoryName', (req, res) => {
 })
 
 app.listen(port, () => {
-    console.log(`Example app listening on port ${port}`)
+    console.log(`Example app listening on port http://${hostname}:${port}`)
 })
 

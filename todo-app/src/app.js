@@ -1,10 +1,21 @@
 let categories = []
 let todos = []
 
+async function getElements() {
+  let todosPromise = fetch("/api/todos")
+  let categoriesPromise = fetch("/api/categories")
 
-fetch('/api/todos')
-.then(res => res.json())
-.then(data => console.log(data))
+  Promise.all([todosPromise, categoriesPromise])
+    .then((res) => {
+      return Promise.all(res.map((appData) => appData.json()))
+    })
+    .then(([todos, categories]) => {
+      renderTodoList(todos)
+      createCategoryList(categories)
+    })
+}
+
+getElements()
 
 function addCategory() {
   let categoryText = document.getElementById("myNewCategory").value
