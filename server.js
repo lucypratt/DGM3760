@@ -57,7 +57,7 @@ app.post('/api/todos', (req, res) => {
 })
 
 //update todos
-app.put('/api/todos', (req, res) => {
+app.put('/api/todos/:id', (req, res) => {
     const todoId = parseInt(req.params.id)
     const updatedTodo = req.body
     todos = todos.map(todo => {
