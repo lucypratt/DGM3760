@@ -24,7 +24,7 @@ let todos = [
     {
         id: 2,
         todo: "something else",
-        done: false
+        done: true
     }
 ]
 
@@ -46,13 +46,13 @@ app.get('/api/todos', (req, res) => {
 })
 
 app.post('/api/todos', (req, res) => {
-    res.send("Got a POST request")
-    /* const newTodo = {
+    //res.send("Got a POST request")
+    const newTodo = {
         id: todos.length,
         todo: "New Todo " + (todos.length + 1),
         done: false
     }
-    todos.push(newTodo) */
+    todos.push(newTodo) 
     res.send(todos)
 })
 
@@ -69,21 +69,21 @@ app.put('/api/todos/:id', (req, res) => {
     res.send(todos)
 })
 
-app.delete('api/todos/:id', (req, res) => {
+app.delete('/api/todos/:id', (req, res) => {
     const todoID = parseInt(req.params.id)
     todos = todos.filter(todo => todo.id !== todoID)
     res.send(todos)
 })
 
 //complete todo
-app.post('api/complete', (req, res) => {
+app.post('/api/complete', (req, res) => {
 const todoID = req.body.todoID
 
 
 const todoIndex = todos.findIndex(todo => todo.todoID == todoID)
 console.log("index", todoIndex)
 
-todos(todoIndex).done = !todos(todoIndex).done
+todos[todoIndex].done = !todos[todoIndex].done
 
 res.send(todos)
 })
@@ -102,13 +102,13 @@ app.get('/api/categories', (req, res) => {
 
 //add a category
 app.post('/api/categories', (req, res) => {
-    const newCategory = req.body.category.name
+    const newCategory = req.body.name
     categories.push(newCategory)
     res.send(categories)
 })
 //update categories
 app.put('/api/todos/categories/:categoryName', (req, res) => {
-    const categoryName = req.params.category.name
+    const categoryName = req.params.categoryName
     const updatedCategory = req.body.category.name
     categories = categories.map(category => {
         if (category === categoryName) {
