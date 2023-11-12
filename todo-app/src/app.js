@@ -5,14 +5,24 @@ async function getElements() {
   let todosPromise = fetch("/api/todos")
   let categoriesPromise = fetch("/api/categories")
 
-  Promise.all([todosPromise, categoriesPromise])
-    .then((res) => {
-      return Promise.all(res.map((appData) => appData.json()))
-    })
-    .then(([todos, categories]) => {
-      renderTodoList(todos)
-      createCategoryList(categories)
-    })
+  try {
+    const [todosResponse, categoriesResponse] = await Promise.all([
+      todosPromise,
+      categoriesPromise,
+    ])
+
+    const todosData = await todosResponse.json()
+    const categoriesData = await categoriesResponse.json()
+
+ 
+    todos = todosData
+    categories = categoriesData
+
+    renderTodoList()
+    createCategoryList()
+  } catch (error) {
+    console.error("Error fetching data:", error)
+  }
 }
 
 getElements()
@@ -20,10 +30,18 @@ getElements()
 function addCategory() {
   let categoryText = document.getElementById("myNewCategory").value
 
-  let newCategory = { name: categoryText }
-  categories.push(newCategory)
-  createCategoryList()
+   let newCategory = { name: categoryText }
 
+  fetch("/api/categories", {
+    method: "POST",
+    body: JSON.stringify({ name: newCategory }),
+    headers: { "Content-Type": "application/json" }
+  })
+  .then((res) => res.json())
+  .then((data) => {
+    categories = data
+    createCategoryList()
+  })
   document.getElementById("myNewCategory").value = ""
 }
 
