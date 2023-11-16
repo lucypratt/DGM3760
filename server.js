@@ -12,20 +12,23 @@ app.use(bodyParser.urlencoded ( {extended: true}))
 
 let todos = [
     {
-        id: 0,
-        todo: "a task",
-        done: false
+    id: 0,
+    todo: "todoText",
+    done: false,
+    category: "Category1"
     },
     {
         id: 1,
-        todo: "Something else",
-        done: false
-    },
-    {
-        id: 2,
-        todo: "something else",
-        done: true
-    }
+        todo: "todoText2",
+        done: false,
+        category: "Category2"
+        },
+        {
+            id: 2,
+            todo: "todoText3",
+            done: false,
+            category: "Category3"
+            },
 ]
 
 let categories = [
@@ -40,23 +43,19 @@ let categories = [
     }
 ]
 
-// get todos
+// get todos - Done!
 app.get('/api/todos', (req, res) => {
     res.send(todos)
 })
 
+//Add todo - Done!
 app.post('/api/todos', (req, res) => {
-    //res.send("Got a POST request")
-    const newTodo = {
-        id: todos.length,
-        todo: "New Todo " + (todos.length + 1),
-        done: false
-    }
-    todos.push(newTodo) 
+    const newTodo = req.body.todo
+    todos.push(newTodo)
     res.send(todos)
 })
 
-//update todos
+//update todos - Done!
 app.put('/api/todos/:id', (req, res) => {
     const todoId = parseInt(req.params.id)
     const updatedTodo = req.body
@@ -69,44 +68,51 @@ app.put('/api/todos/:id', (req, res) => {
     res.send(todos)
 })
 
+//delete todos - done!
 app.delete('/api/todos/:id', (req, res) => {
     const todoID = parseInt(req.params.id)
     todos = todos.filter(todo => todo.id !== todoID)
     res.send(todos)
 })
 
-//complete todo
+//delete all todos - not working
+app.delete('/api/todos/completed', (req, res) => {
+    todos = todos.filter(todo => !todo.done);
+    res.send(todos)
+  })
+
+//complete todo - done!
 app.post('/api/complete', (req, res) => {
-const todoID = req.body.todoID
+const todoID = req.body.id
+const newDoneStatus = req.body.done
 
+  const todoIndex = todos.findIndex((todo) => todo.id === todoID)
 
-const todoIndex = todos.findIndex(todo => todo.todoID == todoID)
-console.log("index", todoIndex)
-
-todos[todoIndex].done = !todos[todoIndex].done
-
-res.send(todos)
+  if (todoIndex !== -1) {
+    todos[todoIndex].done = newDoneStatus
+    res.send(todos)
+  } 
 })
 
-//Todos for each category
-app.get('/api/todos/categories', (req, res) => {
-    const categoryName = req.body.category.name
+//Todos for each category - Done!
+app.get('/api/todos/categories/:categoryName', (req, res) => {
+    const categoryName = req.params.categoryName
     const todosForCategory = todos.filter(todo => todo.category === categoryName)
     res.send(todosForCategory)
 })
 
-//get categories
+//get categories - Done!
 app.get('/api/categories', (req, res) => {
     res.send(categories)
 })
 
-//add a category
+//add a category - Done!
 app.post('/api/categories', (req, res) => {
     const newCategory = req.body.name
     categories.push(newCategory)
     res.send(categories)
 })
-//update categories
+//update categories - Done!
 app.put('/api/todos/categories/:categoryName', (req, res) => {
     const categoryName = req.params.categoryName
     const updatedCategory = req.body.category.name
@@ -118,10 +124,21 @@ app.put('/api/todos/categories/:categoryName', (req, res) => {
     })
     res.send(categories)
 })
-//delete category
+//delete category - done!
 app.delete('/api/categories/:categoryName', (req, res) => {
-    const categoryName = req.params.category.name
-    categories = categories.filter(category => category !== categoryName)
+    const categoryName = req.params.categoryName
+    categories = categories.filter(category => category.name !== categoryName)
+
+    let updatedTodos = []
+    for (let i = 0; i < todos.length; i++) {
+        let currentTodo = todos[i]
+        if (currentTodo.category === categoryName) {
+            currentTodo.category = ""
+        }
+        updatedTodos.push(currentTodo)
+    }
+    todos = updatedTodos
+
     res.send(categories)
 })
 

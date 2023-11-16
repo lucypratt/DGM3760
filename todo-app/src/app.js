@@ -26,7 +26,7 @@ async function getElements() {
 }
 
 getElements()
-
+//Done!
 function addCategory() {
   let categoryText = document.getElementById("myNewCategory").value
 
@@ -48,53 +48,50 @@ function addCategory() {
 function editCategory(name) {
   let newText = prompt("Edit category:", getCategoryById(name).name)
   if (newText !== null) {
-    categories = categories.map((category) => {
-      if (category.name === name) {
-        category.name = newText
-      }
-      return category
-    })
+    const updatedCategory = { name: newText }
 
-    todos = todos.map((todo) => {
-      if (todo.category === name) {
-        todo.category = newText
-      }
-      return todo
+    fetch(`/api/todos/categories/${name}`, {
+      method: "PUT",
+      body: JSON.stringify({ category: updatedCategory }),
+      headers: { "Content-Type": "application/json" }
     })
+      .then((res) => res.json())
+      .then((data) => {
+        categories = data
 
-    createCategoryList()
-    createTodoCategoryDropdown()
-    createSortCategoryDropdown()
-    renderTodoList()
+        todos = todos.map((todo) => {
+          if (todo.category === name) {
+            todo.category = newText
+          }
+          return todo
+        })
+
+        categories = categories.map((category) => {
+          if (category.name === name) {
+            category.name = newText
+          }
+          return category
+        })
+
+        createCategoryList()
+        createTodoCategoryDropdown()
+        createSortCategoryDropdown()
+        renderTodoList()
+      })
   }
 }
-
 function deleteCategory(name) {
-  let updatedCategories = []
-  for (let i = 0; i < categories.length; i++) {
-      let currentCategory = categories[i]
-      if (currentCategory.name !== name) {
-          updatedCategories.push(currentCategory)
-      }
-  }
-  categories = updatedCategories
-  
-
-  let updatedTodos = []
-  for (let i = 0; i < todos.length; i++) {
-      let currentTodo = todos[i]
-      if (currentTodo.category === name) {
-          currentTodo.category = ""
-      }
-      updatedTodos.push(currentTodo)
-  }
-  todos = updatedTodos
-
-    createCategoryList()
-    createTodoCategoryDropdown()
-    createSortCategoryDropdown()
-    renderTodoList()
-  
+  fetch(`/api/categories/${name}`, {
+      method: 'DELETE'
+  })
+  .then(res => res.json())
+  .then(data => {
+      categories = data
+      createCategoryList()
+      createTodoCategoryDropdown()
+      createSortCategoryDropdown()
+      renderTodoList()
+  })
 }
 
 function getCategoryById(name) {
@@ -201,56 +198,66 @@ function createSortCategoryDropdown() {
 
 // }
 
-let newTodoID = 1
+//Done!
 function addTodo() {
   let todoText = document.getElementById("newTodo").value
   let selectedCategory = document.getElementById("category").value
 
-  let newTodo = {
-    id: newTodoID,
-    task: todoText,
-    complete: false,
-    category: selectedCategory,
-  }
-  todos.push(newTodo)
-  renderTodoList()
+  fetch("/api/todos")
+    .then((res) => res.json())
+    .then((data) => {
+      let newTodoID = findMaxTodoID(data) + 1  
+      
+      let newTodo = {
+        id: newTodoID,
+        todo: todoText,
+        done: false,
+        category: selectedCategory,
+      }
 
-  document.getElementById("newTodo").value = ""
-  newTodoID ++
+      fetch("/api/todos", {
+        method: "POST",
+        body: JSON.stringify({ todo: newTodo }),
+        headers: { "Content-Type": "application/json" },
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          todos = data
+          renderTodoList()
+        })
 
-
-  fetch('/api/todo', {
-    method: 'POST',
-    body: JSON.stringify({todo: todoText}),
-    headers: {"Content-Type": "application/json"}
-  })
-  .then(res => res.json())
-  .then(data => {
-    console.log(data)
-    renderTodoList(data)
-  })
+      document.getElementById("newTodo").value = ""
+    })
 }
 
+function findMaxTodoID(todos) {
+  if (!todos || todos.length === 0) {
+    return 0
+  }
+  return Math.max(...todos.map((todo) => todo.id))
+}
+
+
 function toggleDone(id) {
+  console.log('Toggling done for ID:', id);
   todos = todos.map( (todo) => {
     if (todo.id === id) {
-      todo.complete = !todo.complete
+      todo.done = !todo.done
     }
     return todo
   })
   renderTodoList()
 
-  let todoID = event.target.dataset.todoid
 
   //make a fetch request to complete dodo
   fetch('/api/complete', {
     method: 'POST',
-    body: JSON.stringify({todoID}),
+    body: JSON.stringify({ id: id, done: !getTodoById(id).done }),
     headers: {"Content-Type": "application/json"}
   })
   .then(res => res.json())
   .then(data => {
-    console.log(data)
+    console.log('Received data from server:', data)
     renderTodoList(data)
   })
 }
@@ -262,17 +269,27 @@ function toggleDone(id) {
 
 
 function editTodo(id) {
-  let newText = prompt("Edit todo:", getTodoById(id).task)
+  let newText = prompt("Edit todo:", getTodoById(id).task);
   if (newText !== null) {
-    todos = todos.map( (todo) => {
-      if (todo.id === id) {
-        todo.task = newText
+    const updatedTodo = {
+      todo: newText
+    };
+
+    fetch(`/api/todos/${id}`, {
+      method: "PUT",
+      body: JSON.stringify(updatedTodo),
+      headers: {
+        "Content-Type": "application/json"
       }
-      return todo
     })
-    renderTodoList()
+      .then((res) => res.json())
+      .then((data) => {
+        todos = data
+        renderTodoList()
+      })
   }
 }
+
 //Old CSS Deletion
 //  const strikedTasks =
 //   const completeTaskArr = new Array()
@@ -292,18 +309,30 @@ function editTodo(id) {
 //   removeLi(document.getElementById('task'))
 
 function deleteTodo(id) {
-  todos = todos.filter((todo) => {
-    return todo.id !== id
+  fetch(`/api/todos/${id}`, {
+    method: 'DELETE',
   })
-  renderTodoList()
+    .then((res) => res.json())
+    .then((data) => {
+      todos = data
+      renderTodoList()
+    })
 }
 
+// not working
 function deleteCompleted() {
-  todos = todos.filter((todo) => {
-    return !todo.complete
+  
+  fetch('/api/todos/completed', {
+    method: 'DELETE'
   })
-  renderTodoList()
+  .then((res) => res.json())
+  .then((data) => {
+    todos = data
+    renderTodoList()
+  })
 }
+
+
 
 function getTodoById(id) {
   return todos.find((todo) => {
@@ -317,7 +346,7 @@ function renderTodoList() {
 
   todos.forEach( (todo) => {
     let li = document.createElement("li")
-    li.innerText = todo.task + " (Category: " + todo.category + ")"
+    li.innerText = todo.todo + " (Category: " + todo.category + " )"
     li.onclick = () => {
       toggleDone(todo.id)
     }
@@ -328,9 +357,17 @@ function renderTodoList() {
       event.stopPropagation()
       editTodo(todo.id)
     }
+
+    let deleteBtn = document.createElement("span")
+    deleteBtn.classList.add("delete-btn")
+    deleteBtn.innerHTML = "&#10006;"
+    deleteBtn.onclick = (event) => {
+      deleteTodo(todo.id)
+    }
+    li.appendChild(deleteBtn)
     li.appendChild(editBtn)
 
-    if (todo.complete) {
+    if (todo.done) {
       li.classList.add("done")
     }
 
@@ -343,7 +380,7 @@ function renderTodoList() {
 function updateTodosLeft() {
   let totalTodos = todos.length
   let completedTodos = todos.filter((todo) => {
-    return todo.complete
+    return todo.done
   }).length
   let todosLeft = totalTodos - completedTodos
   document.getElementById("todosLeft").innerText = "You have " + todosLeft + " todos left"
@@ -351,23 +388,16 @@ function updateTodosLeft() {
 
 function sortTodosByCategory() {
   let selectedCategory = document.getElementById("sortCategory").value
-  let sortedTodos = []
 
   if (selectedCategory === "all") {
-    renderTodoList()
+    getElements()
   } else {
-    let filteredTodos = todos.filter((todo) => {
-      return todo.category === selectedCategory
-    })
-    for (let i = 0; i < filteredTodos.length; i++) {
-      sortedTodos.push(filteredTodos[i])
-  }
-  for (let i = 0; i < todos.length; i++) {
-    if (todos[i].category !== selectedCategory) {
-        sortedTodos.push(todos[i])
-    }
-}
-    todos = sortedTodos
-    renderTodoList()
+    fetch(`/api/todos/categories/${selectedCategory}`)
+      .then(res => res.json())
+      .then(data => {
+        todos = data
+        renderTodoList()
+      })
+      
   }
 }
